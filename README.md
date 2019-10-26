@@ -1,18 +1,18 @@
-# JSON encode/decode decorator for react/cache
+# (un)serialize decorator for react/cache
 
-[![Build Status](https://travis-ci.org/WyriHaximus/reactphp-cache-json.svg?branch=master)](https://travis-ci.org/WyriHaximus/reactphp-cache-json)
-[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-cache-json/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-cache-json)
-[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-cache-json/downloads.png)](https://packagist.org/packages/WyriHaximus/react-cache-json)
-[![Code Coverage](https://scrutinizer-ci.com/g/WyriHaximus/reactphp-cache-json/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/WyriHaximus/reactphp-cache-json/?branch=master)
-[![License](https://poser.pugx.org/WyriHaximus/react-cache-json/license.png)](https://packagist.org/packages/WyriHaximus/react-cache-json)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/WyriHaximus/reactphp-cache-json/badge.svg)](https://travis-ci.org/WyriHaximus/reactphp-cache-json)
+[![Build Status](https://travis-ci.org/WyriHaximus/reactphp-cache-serialize.svg?branch=master)](https://travis-ci.org/WyriHaximus/reactphp-cache-serialize)
+[![Latest Stable Version](https://poser.pugx.org/WyriHaximus/react-cache-serialize/v/stable.png)](https://packagist.org/packages/WyriHaximus/react-cache-serialize)
+[![Total Downloads](https://poser.pugx.org/WyriHaximus/react-cache-serialize/downloads.png)](https://packagist.org/packages/WyriHaximus/react-cache-serialize)
+[![Code Coverage](https://scrutinizer-ci.com/g/WyriHaximus/reactphp-cache-serialize/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/WyriHaximus/reactphp-cache-serialize/?branch=master)
+[![License](https://poser.pugx.org/WyriHaximus/react-cache-serialize/license.png)](https://packagist.org/packages/WyriHaximus/react-cache-serialize)
+[![PHP 7 ready](http://php7ready.timesplinter.ch/WyriHaximus/reactphp-cache-serialize/badge.svg)](https://travis-ci.org/WyriHaximus/reactphp-cache-serialize)
 
 # Installation
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `^`.
 
 ```
-composer require wyrihaximus/react-cache-json 
+composer require wyrihaximus/react-cache-serialize 
 ```
 
 # Usage
@@ -23,13 +23,13 @@ Wrap any class implementing `React\Cache\CacheInterface` and it will encode any 
 <?php
 
 $cache = new ArrayCache();
-$jsonCache = new Json($cache);
+$jsonCache = new Serialize($cache);
 
 $jsonCache->set('key', ['value']); // Store
 $jsonCache->get('key')->then(function ($value) {
     var_export($value);
     /**
-     * ['value']
+     * a:1:{i:0;s:5:"value";}
      */
 });
 
@@ -39,7 +39,7 @@ $jsonCache->get('key')->then(function ($value) {
 
 The MIT License (MIT)
 
-Copyright (c) 2018 Cees-Jan Kiewiet
+Copyright (c) 2019 Cees-Jan Kiewiet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -2,12 +2,10 @@
 
 namespace WyriHaximus\React\Cache;
 
-use function ExceptionalJSON\decode;
-use function ExceptionalJSON\encode;
 use React\Cache\CacheInterface;
 use React\Promise\PromiseInterface;
 
-final class Json implements CacheInterface
+final class Serialize implements CacheInterface
 {
     /** @var CacheInterface */
     private $cache;
@@ -32,7 +30,7 @@ final class Json implements CacheInterface
                 return $result;
             }
 
-            return decode($result, true);
+            return \unserialize($result);
         });
     }
 
@@ -44,7 +42,7 @@ final class Json implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->cache->set($key, encode($value), $ttl);
+        return $this->cache->set($key, \serialize($value), $ttl);
     }
 
     /**
@@ -64,7 +62,7 @@ final class Json implements CacheInterface
                     continue;
                 }
 
-                $results[$key] = decode($result, true);
+                $results[$key] = \unserialize($result);
             }
 
             return $results;
@@ -74,7 +72,7 @@ final class Json implements CacheInterface
     public function setMultiple(array $values, $ttl = null)
     {
         foreach ($values as $key => $value) {
-            $values[$key] = encode($value);
+            $values[$key] = \serialize($value);
         }
 
         return $this->cache->setMultiple($values, $ttl);

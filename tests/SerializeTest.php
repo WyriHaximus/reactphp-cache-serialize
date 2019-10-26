@@ -5,17 +5,17 @@ namespace WyriHaximus\Tests\React\Cache;
 use React\Cache\CacheInterface;
 use function React\Promise\resolve;
 use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
-use WyriHaximus\React\Cache\Json;
+use WyriHaximus\React\Cache\Serialize;
 
 /**
  * @internal
  */
-final class JsonTest extends AsyncTestCase
+final class SerializeTest extends AsyncTestCase
 {
     public function testGet(): void
     {
         $key = 'sleutel';
-        $string = '{"foo":"bar"}';
+        $string = 'a:1:{s:3:"foo";s:3:"bar";}';
         $json = [
             'foo' => 'bar',
         ];
@@ -23,7 +23,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->get($key, null)->shouldBeCalled()->willReturn(resolve($string));
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         self::assertSame($json, $this->await($jsonCache->get($key)));
     }
 
@@ -34,14 +34,14 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->get($key, null)->shouldBeCalled()->willReturn(resolve(null));
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         self::assertNull($this->await($jsonCache->get($key)));
     }
 
     public function testSet(): void
     {
         $key = 'sleutel';
-        $string = '{"foo":"bar"}';
+        $string = 'a:1:{s:3:"foo";s:3:"bar";}';
         $json = [
             'foo' => 'bar',
         ];
@@ -49,7 +49,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->set($key, $string, null)->shouldBeCalled();
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         $jsonCache->set($key, $json);
     }
 
@@ -60,14 +60,14 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->delete($key)->shouldBeCalled();
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         $jsonCache->delete($key);
     }
 
     public function testGetMultiple(): void
     {
         $key = 'sleutel';
-        $string = '{"foo":"bar"}';
+        $string = 'a:1:{s:3:"foo";s:3:"bar";}';
         $json = [
             'foo' => 'bar',
         ];
@@ -75,7 +75,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->getMultiple([$key], null)->shouldBeCalled()->willReturn(resolve([$key => $string]));
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         self::assertSame([$key => $json], $this->await($jsonCache->getMultiple([$key])));
     }
 
@@ -86,14 +86,14 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->getMultiple([$key], null)->shouldBeCalled()->willReturn(resolve([$key => null]));
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         self::assertNull(\current($this->await($jsonCache->getMultiple([$key]))));
     }
 
     public function testSetMultiple(): void
     {
         $key = 'sleutel';
-        $string = '{"foo":"bar"}';
+        $string = 'a:1:{s:3:"foo";s:3:"bar";}';
         $json = [
             'foo' => 'bar',
         ];
@@ -101,7 +101,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->setMultiple([$key => $string], null)->shouldBeCalled();
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         $jsonCache->setMultiple([$key => $json]);
     }
 
@@ -111,7 +111,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->deleteMultiple([$key], null)->shouldBeCalled();
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         $jsonCache->deleteMultiple([$key]);
     }
 
@@ -120,7 +120,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->clear()->shouldBeCalled();
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         $jsonCache->clear();
     }
 
@@ -130,7 +130,7 @@ final class JsonTest extends AsyncTestCase
         $cache = $this->prophesize(CacheInterface::class);
         $cache->has($key, null)->shouldBeCalled();
 
-        $jsonCache = new Json($cache->reveal());
+        $jsonCache = new Serialize($cache->reveal());
         $jsonCache->has($key);
     }
 }

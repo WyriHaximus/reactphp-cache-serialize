@@ -1,6 +1,6 @@
 {
-    "name": "wyrihaximus/react-cache-json",
-    "description": "JSON encode/decode decorator for react/cache",
+    "name": "wyrihaximus/react-cache-serialize",
+    "description": "(un)serialize decorator for react/cache",
     "license": "MIT",
     "authors": [
         {
@@ -9,9 +9,8 @@
         }
     ],
     "require": {
-        "php": "^7.2",
-        "daverandom/exceptional-json": "^1.0",
-        "react/cache": "^0.6.0 || ^1.0.0"
+        "php": "^7.3",
+        "react/cache": "^1.0.0"
     },
     "require-dev": {
         "wyrihaximus/async-test-utilities": "^1.1"
@@ -29,7 +28,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "7.2"
+            "php": "7.3"
         }
     },
     "scripts": {
