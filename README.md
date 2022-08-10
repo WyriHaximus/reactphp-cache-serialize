@@ -5,14 +5,13 @@
 [![Total Downloads](https://poser.pugx.org/WyriHaximus/react-cache-serialize/downloads.png)](https://packagist.org/packages/WyriHaximus/react-cache-serialize)
 [![Code Coverage](https://scrutinizer-ci.com/g/WyriHaximus/reactphp-cache-serialize/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/WyriHaximus/reactphp-cache-serialize/?branch=master)
 [![License](https://poser.pugx.org/WyriHaximus/react-cache-serialize/license.png)](https://packagist.org/packages/WyriHaximus/react-cache-serialize)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/WyriHaximus/reactphp-cache-serialize/badge.svg)](https://travis-ci.org/WyriHaximus/reactphp-cache-serialize)
 
 # Installation
 
 To install via [Composer](http://getcomposer.org/), use the command below, it will automatically detect the latest version and bind it with `^`.
 
 ```
-composer require wyrihaximus/react-cache-serialize 
+composer require wyrihaximus/react-cache-serialize
 ```
 
 # Usage

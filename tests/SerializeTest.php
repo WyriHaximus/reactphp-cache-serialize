@@ -1,30 +1,30 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace WyriHaximus\Tests\React\Cache;
 
 use React\Cache\CacheInterface;
-use function React\Promise\resolve;
 use WyriHaximus\AsyncTestUtilities\AsyncTestCase;
 use WyriHaximus\React\Cache\Serialize;
 
-/**
- * @internal
- */
+use function array_keys;
+use function current;
+use function React\Promise\resolve;
+
 final class SerializeTest extends AsyncTestCase
 {
     public function testGet(): void
     {
-        $key = 'sleutel';
+        $key    = 'sleutel';
         $string = 'a:1:{s:3:"foo";s:3:"bar";}';
-        $json = [
-            'foo' => 'bar',
-        ];
+        $json   = ['foo' => 'bar'];
 
         $cache = $this->prophesize(CacheInterface::class);
-        $cache->get($key, null)->shouldBeCalled()->willReturn(resolve($string));
+        $cache->get($key, 123)->shouldBeCalled()->willReturn(resolve($string));
 
         $jsonCache = new Serialize($cache->reveal());
-        self::assertSame($json, $this->await($jsonCache->get($key)));
+        self::assertSame($json, $this->await($jsonCache->get($key, 123)));
     }
 
     public function testGetNullShouldBeIgnored(): void
@@ -38,13 +38,25 @@ final class SerializeTest extends AsyncTestCase
         self::assertNull($this->await($jsonCache->get($key)));
     }
 
-    public function testSet(): void
+    /**
+     * @test
+     */
+    public function getNonNullDefault(): void
     {
         $key = 'sleutel';
+
+        $cache = $this->prophesize(CacheInterface::class);
+        $cache->get($key, 123)->shouldBeCalled()->willReturn(resolve(null));
+
+        $jsonCache = new Serialize($cache->reveal());
+        self::assertSame(123, $this->await($jsonCache->get($key, 123)));
+    }
+
+    public function testSet(): void
+    {
+        $key    = 'sleutel';
         $string = 'a:1:{s:3:"foo";s:3:"bar";}';
-        $json = [
-            'foo' => 'bar',
-        ];
+        $json   = ['foo' => 'bar'];
 
         $cache = $this->prophesize(CacheInterface::class);
         $cache->set($key, $string, null)->shouldBeCalled();
@@ -66,17 +78,23 @@ final class SerializeTest extends AsyncTestCase
 
     public function testGetMultiple(): void
     {
-        $key = 'sleutel';
-        $string = 'a:1:{s:3:"foo";s:3:"bar";}';
-        $json = [
-            'foo' => 'bar',
+        $rawItems          = [
+            'chave' => 123,
+            'sleutel' => 'a:1:{s:3:"foo";s:3:"bar";}',
+            'key' => null,
         ];
+        $unserializedItems = [
+            'chave' => 123,
+            'sleutel' => ['foo' => 'bar'],
+            'key' => null,
+        ];
+        $keys              = array_keys($rawItems);
 
         $cache = $this->prophesize(CacheInterface::class);
-        $cache->getMultiple([$key], null)->shouldBeCalled()->willReturn(resolve([$key => $string]));
+        $cache->getMultiple($keys, 123)->shouldBeCalled()->willReturn(resolve($rawItems));
 
         $jsonCache = new Serialize($cache->reveal());
-        self::assertSame([$key => $json], $this->await($jsonCache->getMultiple([$key])));
+        self::assertSame($unserializedItems, $this->await($jsonCache->getMultiple($keys, 123)));
     }
 
     public function testGetMultipleNullShouldBeIgnored(): void
@@ -87,16 +105,14 @@ final class SerializeTest extends AsyncTestCase
         $cache->getMultiple([$key], null)->shouldBeCalled()->willReturn(resolve([$key => null]));
 
         $jsonCache = new Serialize($cache->reveal());
-        self::assertNull(\current($this->await($jsonCache->getMultiple([$key]))));
+        self::assertNull(current($this->await($jsonCache->getMultiple([$key])))); /** @phpstan-ignore-line */
     }
 
     public function testSetMultiple(): void
     {
-        $key = 'sleutel';
+        $key    = 'sleutel';
         $string = 'a:1:{s:3:"foo";s:3:"bar";}';
-        $json = [
-            'foo' => 'bar',
-        ];
+        $json   = ['foo' => 'bar'];
 
         $cache = $this->prophesize(CacheInterface::class);
         $cache->setMultiple([$key => $string], null)->shouldBeCalled();
@@ -107,7 +123,7 @@ final class SerializeTest extends AsyncTestCase
 
     public function testDeleteMultiple(): void
     {
-        $key = 'sleutel';
+        $key   = 'sleutel';
         $cache = $this->prophesize(CacheInterface::class);
         $cache->deleteMultiple([$key], null)->shouldBeCalled();
 
@@ -126,7 +142,7 @@ final class SerializeTest extends AsyncTestCase
 
     public function testHas(): void
     {
-        $key = 'sleutel';
+        $key   = 'sleutel';
         $cache = $this->prophesize(CacheInterface::class);
         $cache->has($key, null)->shouldBeCalled();
 
